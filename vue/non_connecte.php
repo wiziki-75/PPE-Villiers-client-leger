@@ -1,0 +1,1 @@
+<h1>Vous devez vous <a href="index.php?page=connexion">connecter</a> ou vous <a href="index.php?page=enregistrement">enregistrer</a> pour accéder à cette page.</h1>
