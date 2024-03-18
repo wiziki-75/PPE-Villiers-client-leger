@@ -17,7 +17,8 @@ class user extends BDD
         }
 
         // Étape 2: Vérifier le mot de passe
-        if (password_verify($mdp, $resultat['motdepasse'])) {
+        //if (password_verify($mdp, $resultat['motdepasse'])) {
+        if ($mdp === $resultat['motdepasse']) {
             // Le mot de passe correspond
             return $resultat;
         } else {
@@ -52,7 +53,8 @@ class user extends BDD
             $nom = $tab['nom'];
             $prenom = $tab['prenom'];
             $courriel = $tab['courriel'];
-            $motdepasse = password_hash($tab['password'], PASSWORD_DEFAULT); // Hashage du mot de passe pour la sécurité
+            //$motdepasse = password_hash($tab['password'], PASSWORD_DEFAULT); // Hashage du mot de passe pour la sécurité
+            $motdepasse = $tab['password'];
             $role = $tab['role'];
 
             // Liaison des paramètres
@@ -88,19 +90,21 @@ class user extends BDD
     function updateEmailPassword($id, $email, $password, $resetMDP)
     {
         try {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             if($resetMDP){
                 $requete = $this->unPDO->prepare("UPDATE user SET resetMDP = 0, motdepasse = :password WHERE idUtilisateur = :id;");
                 $requete->bindParam(':id', $id);
-                $requete->bindParam(':password', $hashedPassword);
+                //$requete->bindParam(':password', $hashedPassword);
+                $requete->bindParam(':password', $password);
                 $requete->execute();
                 return true;
             } else {
                 $requete = $this->unPDO->prepare("UPDATE user SET courriel = :email, motdepasse = :password WHERE idUtilisateur = :id;");
                 $requete->bindParam(':email', $email);
                 $requete->bindParam(':id', $id);
-                $requete->bindParam(':password', $hashedPassword);
+                //$requete->bindParam(':password', $hashedPassword);
+                $requete->bindParam(':password', $password);
                 $requete->execute();
     
                 $_SESSION['email'] = $email;

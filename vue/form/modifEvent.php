@@ -15,11 +15,11 @@ if (isset($_POST['event'])) {
         "description" => $_POST['description'],
         "date" => $_POST['date'],
         "type" => $_POST['type'],
-        "lieuId" => $_POST['lieu']
+        "lieuId" => $lieu
     );
 
     $updateEvent = $unControleur->updateEvent($tab);
-    if($updateEvent){
+    if ($updateEvent) {
         header('Location: index.php?page=admin&admin=evenement');
     }
 }
@@ -54,13 +54,28 @@ if (isset($_POST['event'])) {
                     <label for="type" class="form-label">Type</label>
                     <select class="form-select" name="type" id="type">
                         <option value="Concert" <?= $event['type'] == 'Concert' ? 'selected' : '' ?>>Concert</option>
-                        <option value="Culturel" <?= $event['type'] == 'Culturel' ? 'selected' : '' ?>>Culturel</option>
                         <option value="Educatif" <?= $event['type'] == 'Educatif' ? 'selected' : '' ?>>Educatif</option>
                         <option value="Communautaire" <?= $event['type'] == 'Communautaire' ? 'selected' : '' ?>>Communautaire</option>
                     </select>
                 </div>
 
-                <!-- Lieu ID field -->
+                <?php
+                $lieux = $unControleur->selectAllLieu();
+                $lieux_disponibles = [];
+
+                foreach ($lieux as $lieu) {
+                    if ($lieu['disponibilite'] === "disponible") {
+                        $lieux_disponibles[] = $lieu;
+                    }
+                }
+
+                if (empty($lieux_disponibles)) {
+                    $lieu = $event['lieuId'];
+                    echo '<br><button type="submit" class="btn btn-primary" name="event">Soumettre</button><br>';
+                    die('Aucun autre lieu disponible.');
+                }
+                ?>
+
                 <div class="mb-3">
                     <label for="lieuId" class="form-label">Lieu disponible</label>
                     <select class="form-select" name="lieu" id="statut">
@@ -74,6 +89,8 @@ if (isset($_POST['event'])) {
                         <?php
                             }
                         }
+                        
+                        $lieu = $_POST['lieu'];
                         ?>
                     </select>
                 </div>
