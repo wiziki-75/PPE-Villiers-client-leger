@@ -29,8 +29,8 @@
     </thead>
     <tbody>
         <?php
-        $events = $unControleur->selectAllEvenement();
-        foreach ($events as $event) {
+        $presentEvents = $unControleur->selectAllEvenement('present');
+        foreach ($presentEvents as $event) {
         ?>
             <tr>
                 <td>
@@ -77,8 +77,8 @@
     </thead>
     <tbody>
         <?php
-        $events = $unControleur->selectAllEvenement();
-        foreach ($events as $event) {
+        $pastEvents = $unControleur->selectAllEvenement('past');
+        foreach ($pastEvents as $event) {
         ?>
             <tr>
                 <td>
@@ -101,7 +101,7 @@
                 <td><?= $event['statut'] ?></td>
                 <td><?= $event['adresse_lieu'] ?></td>
                 <td><?= $event['user_courriel'] ?></td>
-                <td class="text-center h4"><?= $event['nombre_inscrits'] ?></td>
+                <td class="text-center h4"><?= $event['nombre_inscrits'] ?> / <?= $event['capacite']?></td>
             </tr>
         <?php
         }

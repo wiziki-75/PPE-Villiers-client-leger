@@ -43,7 +43,7 @@ if (isset($_POST['event'])) {
         </div>
 
         <!-- Type dropdown -->
-        <div class="mb-3" hidden>
+        <div class="mb-3">
           <label for="type" class="form-label">Type</label>
           <select class="form-select" name="type" id="type">
             <option value="Concert">Concert</option>
