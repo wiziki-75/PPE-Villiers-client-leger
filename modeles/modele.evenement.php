@@ -1,22 +1,40 @@
 <?php
 class evenement extends BDD
 {
-    public function selectAllEvenement()
+    public function selectAllEvenement($type = 'all')
     {
+        $condition = '';
+
+        switch ($type) {
+            case 'past':
+                $condition = "WHERE evenement.date < NOW()";
+                break;
+            case 'present':
+                $condition = "WHERE evenement.date > NOW()";
+                break;
+            case 'all':
+            default:
+                break;
+        }
+
         $requete = "SELECT evenement.*, 
-            lieu.adresse AS adresse_lieu, 
-            lieu.capacite,
-            user.courriel AS user_courriel,
-            COUNT(participation.idEvenement) AS nombre_inscrits
-            FROM evenement
-            JOIN lieu ON evenement.lieuId = lieu.idLieu
-            JOIN user ON evenement.organisateurId = user.idUtilisateur
-            LEFT JOIN participation ON evenement.idEvenement = participation.idEvenement
-            GROUP BY evenement.idEvenement, lieu.adresse, user.courriel;
-            ";
+                    lieu.adresse AS adresse_lieu, 
+                    lieu.capacite,
+                    user.courriel AS user_courriel,
+                    COUNT(participation.idEvenement) AS nombre_inscrits
+                    FROM evenement
+                    JOIN lieu ON evenement.lieuId = lieu.idLieu
+                    JOIN user ON evenement.organisateurId = user.idUtilisateur
+                    LEFT JOIN participation ON evenement.idEvenement = participation.idEvenement
+                    $condition
+                    GROUP BY evenement.idEvenement, lieu.adresse, lieu.capacite, user.courriel;
+                    ";
+
         $select = $this->unPDO->query($requete);
         return $select->fetchAll();
     }
+
+
 
     public function selectEvent($id)
     {
@@ -86,7 +104,7 @@ class evenement extends BDD
     public function inscriptionEvenement($idParticipant, $idEvenement)
     {
         try {
-            $requete = $this->unPDO->prepare("INSERT INTO participation (idParticipant, nbenfants, idEvenement) VALUES (:idParticipant, 0, :idEvenement)");
+            $requete = $this->unPDO->prepare("INSERT INTO participation (idParticipant, idEvenement) VALUES (:idParticipant, :idEvenement)");
             $requete->bindParam(':idParticipant', $idParticipant);
             $requete->bindParam(':idEvenement', $idEvenement);
 
@@ -168,5 +186,54 @@ class evenement extends BDD
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
         }
+    }
+
+    // === AVIS ===
+
+    public function addAvis($tab)
+    {
+        try {
+            $requete = $this->unPDO->prepare("INSERT INTO avis (note, description, idEvenement, idUtilisateur) 
+            VALUES (:note, :description, :idEvenement, :idUtilisateur);");
+
+            foreach ($tab as $param => $value) {
+                $requete->bindParam(':' . $param, $tab[$param]);
+            }
+
+            $requete->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Erreur : " . $e->getMessage();
+        }
+    }
+
+    public function selectAllAvisByEvent($idEvent)
+    {
+        $requete = $this->unPDO->prepare("SELECT avis.*, user.nom, user.prenom 
+        FROM avis 
+        LEFT JOIN user ON avis.idUtilisateur = user.idUtilisateur
+        WHERE idEvenement = :idEvenement;");
+        $requete->bindParam(':idEvenement', $idEvent);
+        $requete->execute();
+        return $requete->fetchAll();
+    }
+
+    public function avisCheck($idEvent, $idUser)
+    {
+        $requete = $this->unPDO->prepare("SELECT COUNT(*) FROM avis 
+        WHERE idUtilisateur = :idUtilisateur AND idEvenement = :idEvenement;");
+        $requete->bindParam(':idEvenement', $idEvent);
+        $requete->bindParam(':idUtilisateur', $idUser);
+        $requete->execute();
+        return $requete->fetchAll();
+    }
+
+    public function avgAvis($idEvent)
+    {
+        $requete = $this->unPDO->prepare("SELECT AVG(note) FROM avis
+        WHERE idEvenement = :idEvenement");
+        $requete->bindParam(':idEvenement', $idEvent);
+        $requete->execute();
+        return $requete->fetch();
     }
 }

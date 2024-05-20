@@ -12,6 +12,7 @@ if(isset($_POST['lieu'])){
   if($addLieu){
     header('Location: index.php?page=admin&admin=lieu');
   } else {
+    echo 'Erreur dans la création du lieu';
     echo $addlieu;
   }
 
