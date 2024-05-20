@@ -24,9 +24,6 @@ if (!isset($_GET['admin'])) {
         <li class="nav-item">
             <a class="nav-link <?= $_GET['admin'] == 'lieu' ? 'active' : '' ?>" href="index.php?page=admin&admin=lieu" data-toggle="tab">Gestion des Lieux</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link <?= $_GET['admin'] == 'logs' ? 'active' : '' ?>" href="index.php?page=admin&admin=logs" data-toggle="tab">Logs</a>
-        </li>
     </ul>
 
     <div class="tab-content">
@@ -42,9 +39,6 @@ if (!isset($_GET['admin'])) {
                     break;
                 case 'lieu':
                     require_once('vue/admin/lieu_admin.php');
-                    break;
-                case 'logs':
-                    require_once('vue/admin/logs_admin.php');
                     break;
                 default:
                     require_once("vue/erreur.php");

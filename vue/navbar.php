@@ -28,10 +28,6 @@
                 }
             ?>
 
-            <li class="nav-item">
-            <a class="nav-link" href="index.php?page=centre">Centre aéré</a>
-            </li>
-
             <?php
                 if(isset($_SESSION['admin'])){
                     ?>

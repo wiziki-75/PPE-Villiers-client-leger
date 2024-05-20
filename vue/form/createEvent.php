@@ -19,10 +19,10 @@ if (isset($_POST['event'])) {
 
 ?>
 
-<h1>Ajouter un évènement</h1>
 <div class="container mt-5 mb-5"> <!-- Notez l'ajout de mb-5 ici pour l'espace en bas -->
   <div class="row justify-content-center">
     <div class="col-md-8">
+    <h1>Ajouter un évènement</h1>
       <form method="POST">
         <!-- Name field -->
         <div class="mb-3">

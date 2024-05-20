@@ -10,7 +10,6 @@ class Controleur {
         $this->services = [
             'user' => user::class,
             'evenement' => evenement::class,
-            'centre' => centre::class,
             'lieu' => lieu::class
         ];
     }

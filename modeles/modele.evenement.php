@@ -5,6 +5,7 @@ class evenement extends BDD
     {
         $requete = "SELECT evenement.*, 
             lieu.adresse AS adresse_lieu, 
+            lieu.capacite,
             user.courriel AS user_courriel,
             COUNT(participation.idEvenement) AS nombre_inscrits
             FROM evenement

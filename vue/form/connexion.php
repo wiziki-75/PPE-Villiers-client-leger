@@ -10,7 +10,6 @@ if (isset($_POST['connexion'])) {
       $_SESSION['ancienMDP'] = $mdp;
       $_SESSION['mdpRESET'] = true;
       require_once('vue/form/changeMDP.php');
-
     } else {
       $_SESSION['email'] = $unUser['courriel'];
       $_SESSION['nom'] = $unUser['nom'];
@@ -25,13 +24,13 @@ if (isset($_POST['connexion'])) {
   } else {
     echo "<br> Logs incorrect.";
   }
-} else if(isset($_SESSION['mdpRESET'])){
+} else if (isset($_SESSION['mdpRESET'])) {
   if (isset($_POST['valider'])) {
     $unUser = $unControleur->verifConnexion($_SESSION['email_temp'], $_SESSION['ancienMDP']);
     if ($_POST['password'] === $_POST['password2']) {
       if ($_POST['password'] !== $_SESSION['ancienMDP']) {
         $mdpRESET = $unControleur->updateEmailPassword($_SESSION['id'], $_SESSION['email_temp'], $_POST['password'], true);
-        if($mdpRESET){
+        if ($mdpRESET) {
           $_SESSION['email'] = $unUser['courriel'];
           $_SESSION['nom'] = $unUser['nom'];
           $_SESSION['prenom'] = $unUser['prenom'];
@@ -46,7 +45,7 @@ if (isset($_POST['connexion'])) {
         } else {
           echo "Erreur";
         }
-      } else { 
+      } else {
         unset($_SESSION['email_temp']);
         unset($_SESSION['mdpRESET']);
         echo "Le nouveau mot de passe ne peut pas être le même que l'ancien";
@@ -59,18 +58,26 @@ if (isset($_POST['connexion'])) {
   }
 } else {
 ?>
-  <h1>Se connecter</h1>
-  <form method="post">
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" name="email" aria-describedby="emailHelp" required>
+
+  <div class="container mt-5 mb-5"> <!-- Notez l'ajout de mb-5 ici pour l'espace en bas -->
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h1>Se connecter</h1>
+        <form method="post">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" aria-describedby="emailHelp" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary" name="connexion">Se connecter</button>
+        </form>
+      </div>
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" name="password" required>
-    </div>
-    <button type="submit" class="btn btn-primary" name="connexion">Se connecter</button>
-  </form>
+  </div>
+
 <?php
 }
 ?>
