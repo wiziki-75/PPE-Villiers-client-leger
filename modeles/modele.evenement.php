@@ -21,10 +21,12 @@ class evenement extends BDD
                     lieu.adresse AS adresse_lieu, 
                     lieu.capacite,
                     user.courriel AS user_courriel,
+                    user.nom AS user_nom,
+                    user.prenom AS user_prenom,
                     COUNT(participation.idEvenement) AS nombre_inscrits
                     FROM evenement
                     JOIN lieu ON evenement.lieuId = lieu.idLieu
-                    JOIN user ON evenement.organisateurId = user.idUtilisateur
+                    LEFT JOIN user ON evenement.organisateurId = user.idUtilisateur
                     LEFT JOIN participation ON evenement.idEvenement = participation.idEvenement
                     $condition
                     GROUP BY evenement.idEvenement, lieu.adresse, lieu.capacite, user.courriel;
@@ -38,11 +40,16 @@ class evenement extends BDD
 
     public function selectEvent($id)
     {
-        $requete = $this->unPDO->prepare("SELECT evenement.*, lieu.adresse AS adresse_lieu, user.courriel AS user_courriel
+        $requete = $this->unPDO->prepare("SELECT evenement.*, 
+        lieu.adresse AS adresse_lieu, 
+        user.courriel AS user_courriel,
+        user.nom AS user_nom,
+        user.prenom AS user_prenom
         FROM evenement
-        JOIN lieu ON evenement.lieuId = lieu.idLieu
+        LEFT JOIN lieu ON evenement.lieuId = lieu.idLieu
         JOIN user ON evenement.organisateurId = user.idUtilisateur
         WHERE evenement.idEvenement = :id;");
+
         $requete->bindParam(':id', $id);
         $requete->execute();
         return $requete->fetch();
@@ -51,7 +58,6 @@ class evenement extends BDD
     public function addEvent($tab)
     {
         try {
-            // Votre requête SQL préparée
             $requete = $this->unPDO->prepare("INSERT INTO evenement (nom, description, date, type, statut, organisateurId, lieuId) 
             VALUES (:nom, :description, :date, :type, :statut, :organisateurId, :lieuId);");
 
@@ -60,7 +66,6 @@ class evenement extends BDD
                 $requete->bindParam(':' . $param, $tab[$param]);
             }
 
-            // Exécution de la requête
             $requete->execute();
             return true;
         } catch (PDOException $e) {
@@ -72,7 +77,7 @@ class evenement extends BDD
     {
         try {
             $id = $tab['idEvenement'];
-            unset($tab['idEvenement']); // Remove the id from the array to avoid updating it
+            unset($tab['idEvenement']); // Retirer l'identifiant du tableau pour éviter de le mettre à jour
 
             $sql = "UPDATE evenement SET ";
 
@@ -87,17 +92,16 @@ class evenement extends BDD
             $requete = $this->unPDO->prepare($sql);
 
             foreach ($tab as $param => $value) {
-                $requete->bindValue(':' . $param, $value); // using bindValue instead of bindParam
+                $requete->bindValue(':' . $param, $value);
             }
 
-            // Bind the ID with the correct variable
             $requete->bindValue(':idEvenement', $id);
 
             $requete->execute();
             return true;
         } catch (PDOException $e) {
             echo "Erreur lors de la mise à jour : " . $e->getMessage();
-            return false; // It's good practice to return false if the operation was not successful
+            return false;
         }
     }
 
@@ -109,11 +113,10 @@ class evenement extends BDD
             $requete->bindParam(':idEvenement', $idEvenement);
 
             $requete->execute();
-            return true; // Return true on success
+            return true;
         } catch (PDOException $e) {
-            // Log error for debugging purposes
             error_log("Erreur lors de l'inscription à l'événement: " . $e->getMessage());
-            return false; // Return false on failure
+            return false;
         }
     }
 
@@ -123,11 +126,10 @@ class evenement extends BDD
             $requete = $this->unPDO->prepare("DELETE FROM participation WHERE idParticipation = :id;");
             $requete->bindParam(':id', $id);
             $requete->execute();
-            return true; // Return true on success
+            return true;
         } catch (PDOException $e) {
-            // Log error for debugging purposes
             error_log("Erreur lors de l'inscription à l'événement: " . $e->getMessage());
-            return false; // Return false on failure
+            return false;
         }
     }
 
@@ -209,8 +211,7 @@ class evenement extends BDD
 
     public function selectAllAvisByEvent($idEvent)
     {
-        $requete = $this->unPDO->prepare("SELECT avis.*, user.nom, user.prenom 
-        FROM avis 
+        $requete = $this->unPDO->prepare("SELECT avis.*, user.nom, user.prenom FROM avis 
         LEFT JOIN user ON avis.idUtilisateur = user.idUtilisateur
         WHERE idEvenement = :idEvenement;");
         $requete->bindParam(':idEvenement', $idEvent);

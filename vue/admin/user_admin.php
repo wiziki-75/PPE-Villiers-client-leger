@@ -18,7 +18,7 @@
         $users = $unControleur->selectAllUser();
         foreach ($users as $user) {
         ?>
-            <tr>
+            <tr class="<?= $user['role'] === 'organisateur' ? 'table-primary' : '' ?>">
                 <td>
                     <?php
                     if ($user['role'] === "participant") {
@@ -41,11 +41,10 @@
                 <td><?= $user['nom'] ?></td>
                 <td><?= $user['prenom'] ?></td>
                 <td><?= $user['courriel'] ?></td>
-                <td><?= $user['role'] ?></td>
+                <td><strong><?= $user['role'] ?></strong></td>
             </tr>
         <?php
         }
         ?>
-        <!-- Plus de lignes ici -->
     </tbody>
 </table><br>

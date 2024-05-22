@@ -3,8 +3,10 @@ if (isset($_POST['connexion'])) {
   $email = $_POST['email'];
   $mdp = $_POST['password'];
   $unUser = $unControleur->verifConnexion($email, $mdp);
+
   if ($unUser != null) {
     $_SESSION['id'] = $unUser['idUtilisateur'];
+
     if ($unUser['resetMDP']) {
       $_SESSION['email_temp'] = $email;
       $_SESSION['ancienMDP'] = $mdp;
@@ -15,10 +17,11 @@ if (isset($_POST['connexion'])) {
       $_SESSION['nom'] = $unUser['nom'];
       $_SESSION['prenom'] = $unUser['prenom'];
       $_SESSION['role'] = $unUser['role'];
+
       if ($_SESSION['role'] === 'organisateur') {
         $_SESSION['admin'] = 1;
       }
-      //$unControleur->insertLogs("login");
+
       header("Location: index.php");
     }
   } else {
@@ -27,18 +30,21 @@ if (isset($_POST['connexion'])) {
 } else if (isset($_SESSION['mdpRESET'])) {
   if (isset($_POST['valider'])) {
     $unUser = $unControleur->verifConnexion($_SESSION['email_temp'], $_SESSION['ancienMDP']);
+
     if ($_POST['password'] === $_POST['password2']) {
       if ($_POST['password'] !== $_SESSION['ancienMDP']) {
         $mdpRESET = $unControleur->updateEmailPassword($_SESSION['id'], $_SESSION['email_temp'], $_POST['password'], true);
+
         if ($mdpRESET) {
           $_SESSION['email'] = $unUser['courriel'];
           $_SESSION['nom'] = $unUser['nom'];
           $_SESSION['prenom'] = $unUser['prenom'];
           $_SESSION['role'] = $unUser['role'];
+
           if ($_SESSION['role'] === 'organisateur') {
             $_SESSION['admin'] = 1;
           }
-          //$unControleur->insertLogs("login");
+
           unset($_SESSION['email_temp']);
           unset($_SESSION['mdpRESET']);
           header("Location: index.php");
@@ -59,7 +65,7 @@ if (isset($_POST['connexion'])) {
 } else {
 ?>
 
-  <div class="container mt-5 mb-5"> <!-- Notez l'ajout de mb-5 ici pour l'espace en bas -->
+  <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <h1>Se connecter</h1>

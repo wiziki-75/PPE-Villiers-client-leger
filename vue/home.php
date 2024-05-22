@@ -8,6 +8,25 @@ $pastEvent = $unControleur->selectAllEvenement('past');
         <h1>Prochains événements</h1>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             <?php
+
+            function statusConvert($status)
+            {
+                switch ($status) {
+                    case 'confirmé':
+                        return 'Confirmé';
+                        break;
+                    case 'annulé':
+                        return 'Annulé';
+                        break;
+                    case 'en_attente':
+                        return 'En attente';
+                        break;
+                    case 'complet':
+                        return 'Complet';
+                        break;
+                }
+            }
+
             if (!empty($presentEvent)) {
                 foreach ($presentEvent as $evenement) {
             ?>
@@ -33,6 +52,7 @@ $pastEvent = $unControleur->selectAllEvenement('past');
                                     <?= $evenement['date'] ?>
                                 </div>
                             </div>
+
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
                                     <?php $url_detail = "index.php?page=eventDetail&evenement=" . $evenement['idEvenement']; ?>
@@ -55,7 +75,7 @@ $pastEvent = $unControleur->selectAllEvenement('past');
                                             }
                                         }
                                     } else {
-                                        echo $evenement['statut'];
+                                        echo statusConvert($evenement['statut']);
                                     }
                                     ?>
 
@@ -127,7 +147,6 @@ $pastEvent = $unControleur->selectAllEvenement('past');
                                         $participation = $unControleur->checkParticipation($_SESSION['id'], $evenement['idEvenement']);
                                         if ($participation) {
                                     ?>
-                                            <!-- <button type="button" class="btn btn-success" disabled>Inscris</button> -->
                                         <?php
                                         } else {
                                             $url .= "&id=" . $_SESSION['id'];

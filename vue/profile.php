@@ -32,16 +32,16 @@
             <?php
             }
 
-            if(isset($_POST['email'])){
-                if($_POST['password1'] !== '' && $_POST['password2'] !== ''){
-                    if($_POST['password1'] === $_POST['password2']){
+            if (isset($_POST['email'])) {
+                if ($_POST['password1'] !== '' && $_POST['password2'] !== '') {
+                    if ($_POST['password1'] === $_POST['password2']) {
                         $unControleur->updateEmailPassword($_SESSION['id'], $_POST['email'], $_POST['password2'], false);
                     } else {
                         echo "Les mots de passes ne sont pas identiques";
                     }
-                } else if($_POST['password1'] == '' && $_POST['password2'] !== ''){
+                } else if ($_POST['password1'] == '' && $_POST['password2'] !== '') {
                     echo "Vous devez confirmer le mot de passe";
-                } else if($_POST['password1'] !== '' && $_POST['password2'] == ''){
+                } else if ($_POST['password1'] !== '' && $_POST['password2'] == '') {
                     echo "Vous devez confirmer le mot de passe";
                 } else {
                     $unControleur->updateEmail($_SESSION['id'], $_POST['email']);
@@ -74,7 +74,7 @@
                             <td><?= $participation['date'] ?></td>
                             <td><?= $participation['type'] ?></td>
                             <td><?= $participation['adresse_lieu'] ?></td>
-                            <td><a class="btn btn-danger" href="index.php?page=desinscrireEvent&id=<?= $participation['idParticipation']?>">Se désinscrire</a></td>
+                            <td><a class="btn btn-danger" href="index.php?page=desinscrireEvent&id=<?= $participation['idParticipation'] ?>">Se désinscrire</a></td>
                         </tr>
                     <?php
                     }

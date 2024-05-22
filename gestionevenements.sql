@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 21 mai 2024 à 00:07
+-- Généré le : jeu. 23 mai 2024 à 01:32
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -40,11 +40,12 @@ CREATE TABLE `avis` (
 --
 
 INSERT INTO `avis` (`idAvis`, `note`, `description`, `idEvenement`, `idUtilisateur`) VALUES
-(4, 3, 'Moyen mais cool', 18, 11),
-(16, 5, 'genial', 23, 11),
-(17, 1, 'bzzzz', 22, 11),
-(18, 5, 'yeeeeah', 18, 9),
-(19, 4, 'bien', 21, 9);
+(20, 4, 'Super bien !', 28, 11),
+(21, 5, 'Top !', 29, 51),
+(22, 2, 'Moyen', 28, 51),
+(23, 3, 'Correct', 28, 52),
+(24, 4, 'Pas mal', 29, 52),
+(25, 1, 'Terrible !', 28, 9);
 
 -- --------------------------------------------------------
 
@@ -68,11 +69,11 @@ CREATE TABLE `evenement` (
 --
 
 INSERT INTO `evenement` (`idEvenement`, `nom`, `description`, `date`, `type`, `statut`, `organisateurId`, `lieuId`) VALUES
-(18, 'La route de la soif', 'alcool', '2024-03-07 02:14:00', 'Communautaire', 'complet', 11, 6),
-(21, 'test', 'test', '2024-03-02 10:00:00', 'Concert', 'en_attente', 11, 4),
-(22, 'test3', 'test3', '2023-03-03 00:00:00', 'Concert', 'en_attente', 11, 7),
-(23, 'test4', 'test4', '2023-03-03 00:00:00', 'Concert', 'en_attente', 49, 7),
-(27, 'Meeting algerien', 'azerty', '2024-09-01 19:02:00', 'Educatif', 'en_attente', 11, 28);
+(28, 'Exposition Porshe', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', '2023-12-14 11:10:00', 'Communautaire', 'confirmé', 11, 5),
+(29, 'Meeting aérien', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing ', '2024-03-01 14:00:00', 'Communautaire', 'confirmé', 11, 7),
+(30, 'Concert de Jazz', 'Un concert de jazz avec des musiciens locaux.', '2024-06-01 20:00:00', 'Concert', 'confirmé', 31, 3),
+(31, 'Atelier de Peinture', 'Un atelier créatif pour apprendre les techniques de peinture.', '2024-06-02 14:00:00', 'Educatif', 'en_attente', 31, 4),
+(32, 'Fête Communautaire', 'Une fête pour rassembler la communauté avec des activités.', '2024-07-10 10:00:00', 'Communautaire', 'annulé', 31, 5);
 
 --
 -- Déclencheurs `evenement`
@@ -93,8 +94,11 @@ $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `update_lieu_state` AFTER INSERT ON `evenement` FOR EACH ROW BEGIN
-  UPDATE lieu SET disponibilite = 'réservé' WHERE idLieu = NEW.lieuId;
-  
+  IF NEW.date >= CURDATE() THEN
+    UPDATE lieu 
+    SET disponibilite = 'réservé' 
+    WHERE idLieu = NEW.lieuId;
+  END IF;
 END
 $$
 DELIMITER ;
@@ -102,6 +106,18 @@ DELIMITER $$
 CREATE TRIGGER `update_lieu_state2` BEFORE DELETE ON `evenement` FOR EACH ROW BEGIN
   UPDATE lieu SET disponibilite = 'disponible' WHERE idLieu = OLD.lieuId;
 
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_lieu_state3` AFTER UPDATE ON `evenement` FOR EACH ROW BEGIN
+  UPDATE lieu 
+  SET disponibilite = CASE 
+    WHEN NEW.statut = 'annulé' THEN 'disponible'
+    WHEN NEW.statut IN ('confirmé', 'en_attente') THEN 'réservé'
+    ELSE disponibilite
+  END 
+  WHERE idLieu = NEW.lieuId;
 END
 $$
 DELIMITER ;
@@ -125,14 +141,12 @@ CREATE TABLE `lieu` (
 --
 
 INSERT INTO `lieu` (`idLieu`, `nom`, `adresse`, `capacite`, `disponibilite`) VALUES
-(3, 'Lieu 3', '789 Boulevard du Parc', '200', 'réservé'),
+(3, 'Gymnase Tony', '789 Boulevard du Parc', '200', 'réservé'),
 (4, 'Lieu 4', '101 Rue de la Gare', '150', 'réservé'),
-(5, 'Lieu 5', '202 Avenue de la République', '400', 'réservé'),
-(6, 'Lieu 69', '69 rue', '2', 'réservé'),
-(7, 'Parc des grands', 'Boulevard 69', '300', 'réservé'),
-(28, 'test2', 'test2', '50', 'réservé'),
-(29, 'test2', 'test2', '50', 'disponible'),
-(30, 'test3', 'test3', 'test3', 'indisponible'),
+(5, 'Lieu 5', '202 Avenue de la République', '400', 'disponible'),
+(6, 'Lieu 69', '69 rue', '2', 'disponible'),
+(7, 'Parc des grands', 'Boulevard 69', '300', 'disponible'),
+(30, 'Parc St-Pierre', 'test3', '50', 'indisponible'),
 (32, 'Salle 44', '28 rue moliere', '15', 'disponible');
 
 -- --------------------------------------------------------
@@ -178,9 +192,8 @@ INSERT INTO `participant` (`idParticipant`, `dateinscription`) VALUES
 (11, '2024-01-22 00:00:00'),
 (15, '2024-01-25 00:00:00'),
 (29, '2024-03-01 00:00:00'),
-(47, '2024-04-08 00:00:00'),
-(48, '2024-04-08 00:00:00'),
-(50, '2024-04-08 00:00:00');
+(51, '2024-05-23 00:00:00'),
+(52, '2024-05-23 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -200,8 +213,10 @@ CREATE TABLE `participation` (
 --
 
 INSERT INTO `participation` (`idParticipation`, `idParticipant`, `dateinscription`, `idEvenement`) VALUES
-(54, 33, '2024-04-04 08:22:07', 18),
-(56, 9, '2024-05-20 15:54:27', 18);
+(69, 51, '2024-05-22 23:23:25', 30),
+(70, 52, '2024-05-22 23:25:05', 30),
+(71, 9, '2024-05-22 23:30:30', 30),
+(72, 11, '2024-05-22 23:30:59', 30);
 
 --
 -- Déclencheurs `participation`
@@ -278,16 +293,15 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`idUtilisateur`, `nom`, `prenom`, `courriel`, `motdepasse`, `resetMDP`, `role`) VALUES
-(9, 'Lopez', 'Manon', 'manonlopez@email.com', 'root2', 0, 'participant'),
+(9, 'Lopez', 'Manon', 'ml@email.com', 'root', 0, 'participant'),
 (11, 'Guerrand', 'Anthony', 'anthony.guerrand92@gmail.com', 'root', NULL, 'organisateur'),
 (15, 'lourd', 'zark', 'z@gmail.com', '$2y$10$OzY4JlFJen1G0rNZOLvRgu0KCxzJ4aZRcZYdAd4.g1dLwlfjKFCrm', NULL, 'participant'),
 (28, 'Yolo', 'Jean', 'jy@gmail.com', '$2y$10$mDPJWkc2EIbgTs1zoehAl.qmXr5C8kUWsxakal.ex/F5ZiFukBG2i', NULL, 'organisateur'),
 (29, 'MICHEL', 'LOUIS', 'lm@gmail.com', '$2y$10$vxSdTvbFWgPxvC8T2A80RuNrMuZWIRqhI8fRMSekDbS2/jq82HTby', NULL, 'participant'),
 (31, 'Migro', 'Timoté', 'tm@gmail.com', 'root', 0, 'organisateur'),
-(47, 'test7', 'test7', 'test7', 'test7', 0, 'participant'),
-(48, 'test8', 'test8', 'test8', 'test8', 0, 'participant'),
 (49, 'test9', 'test9', 'test9', 'test9', 0, 'organisateur'),
-(50, 'test', 'test', 'test', 'test', 0, 'participant');
+(51, 'Alexandre', 'Breton', 'ab@free.fr', 'azerty', NULL, 'participant'),
+(52, 'Pilot', 'Alex', 'ap@gmail.com', 'avion', NULL, 'participant');
 
 --
 -- Déclencheurs `user`
@@ -425,13 +439,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `avis`
 --
 ALTER TABLE `avis`
-  MODIFY `idAvis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idAvis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT pour la table `evenement`
 --
 ALTER TABLE `evenement`
-  MODIFY `idEvenement` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `idEvenement` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT pour la table `lieu`
@@ -443,13 +457,13 @@ ALTER TABLE `lieu`
 -- AUTO_INCREMENT pour la table `participation`
 --
 ALTER TABLE `participation`
-  MODIFY `idParticipation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `idParticipation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `idUtilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `idUtilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Contraintes pour les tables déchargées

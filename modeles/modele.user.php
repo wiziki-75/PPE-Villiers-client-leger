@@ -17,12 +17,9 @@ class user extends BDD
         }
 
         // Étape 2: Vérifier le mot de passe
-        //if (password_verify($mdp, $resultat['motdepasse'])) {
         if ($mdp === $resultat['motdepasse']) {
-            // Le mot de passe correspond
             return $resultat;
         } else {
-            // Le mot de passe ne correspond pas
             return false;
         }
     }
@@ -46,28 +43,21 @@ class user extends BDD
     function insertUser($tab)
     {
         try {
-            // Préparation de la requête SQL
             $requete = $this->unPDO->prepare("INSERT INTO User (nom, prenom, courriel, motdepasse, role) VALUES (:nom, :prenom, :courriel, :motdepasse, :role)");
-
-            // Temporary variables to hold array values
             $nom = $tab['nom'];
             $prenom = $tab['prenom'];
             $courriel = $tab['courriel'];
-            //$motdepasse = password_hash($tab['password'], PASSWORD_DEFAULT); // Hashage du mot de passe pour la sécurité
             $motdepasse = $tab['password'];
             $role = $tab['role'];
 
-            // Liaison des paramètres
             $requete->bindParam(':nom', $nom);
             $requete->bindParam(':prenom', $prenom);
             $requete->bindParam(':courriel', $courriel);
             $requete->bindParam(':motdepasse', $motdepasse);
             $requete->bindParam(':role', $role);
 
-            // Exécution de la requête
             $requete->execute();
             return true;
-
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
         }
@@ -80,6 +70,7 @@ class user extends BDD
             $requete->bindParam(':email', $email);
             $requete->bindParam(':id', $id);
             $requete->execute();
+            //Changer l'email de la session
             $_SESSION['email'] = $email;
             echo "Email changé.";
         } catch (PDOException $e) {
@@ -90,12 +81,9 @@ class user extends BDD
     function updateEmailPassword($id, $email, $password, $resetMDP)
     {
         try {
-            //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
             if($resetMDP){
                 $requete = $this->unPDO->prepare("UPDATE user SET resetMDP = 0, motdepasse = :password WHERE idUtilisateur = :id;");
                 $requete->bindParam(':id', $id);
-                //$requete->bindParam(':password', $hashedPassword);
                 $requete->bindParam(':password', $password);
                 $requete->execute();
                 return true;
@@ -103,10 +91,9 @@ class user extends BDD
                 $requete = $this->unPDO->prepare("UPDATE user SET courriel = :email, motdepasse = :password WHERE idUtilisateur = :id;");
                 $requete->bindParam(':email', $email);
                 $requete->bindParam(':id', $id);
-                //$requete->bindParam(':password', $hashedPassword);
                 $requete->bindParam(':password', $password);
                 $requete->execute();
-    
+                //Changer l'email de la session
                 $_SESSION['email'] = $email;
                 echo "Mot de passe changé";
             }

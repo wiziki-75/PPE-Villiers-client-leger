@@ -1,5 +1,5 @@
 <?php
-class lieu extends BDD 
+class lieu extends BDD
 {
     function selectAllLieu()
     {
@@ -19,7 +19,6 @@ class lieu extends BDD
     public function addLieu($tab)
     {
         try {
-            // Votre requête SQL préparée
             $requete = $this->unPDO->prepare("INSERT INTO lieu (nom, adresse, capacite, disponibilite) 
             VALUES (:nom, :adresse, :capacite, :disponibilite);");
 
@@ -28,7 +27,6 @@ class lieu extends BDD
                 $requete->bindParam(':' . $param, $tab[$param]);
             }
 
-            // Exécution de la requête
             $requete->execute();
             return true;
         } catch (PDOException $e) {
@@ -40,7 +38,7 @@ class lieu extends BDD
     {
         try {
             $id = $tab['idLieu'];
-            unset($tab['idLieu']); // Remove the id from the array to avoid updating it
+            unset($tab['idLieu']); // Retirer l'identifiant du tableau pour éviter de le mettre à jour
 
             $sql = "UPDATE lieu SET ";
 
@@ -55,21 +53,20 @@ class lieu extends BDD
             $requete = $this->unPDO->prepare($sql);
 
             foreach ($tab as $param => $value) {
-                $requete->bindValue(':' . $param, $value); // using bindValue instead of bindParam
+                $requete->bindValue(':' . $param, $value);
             }
 
-            // Bind the ID with the correct variable
             $requete->bindValue(':idLieu', $id);
-
             $requete->execute();
             return true;
         } catch (PDOException $e) {
             echo "Erreur lors de la mise à jour : " . $e->getMessage();
-            return false; // It's good practice to return false if the operation was not successful
+            return false;
         }
     }
 
-    function lieuState($id, $state){
+    function lieuState($id, $state)
+    {
         try {
             $requete = $this->unPDO->prepare("UPDATE lieu SET disponibilite = :state WHERE idLieu = :id");
             $requete->bindParam(':state', $state);
@@ -77,7 +74,7 @@ class lieu extends BDD
             $requete->execute();
 
             if ($requete->rowCount() > 0) {
-                return true; // L'opération a réussi
+                return true;
             } else {
                 return "Aucune modification effectuée. Vérifiez l'ID du lieu.";
             }

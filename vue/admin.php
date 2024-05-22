@@ -14,6 +14,7 @@ if (!isset($_GET['admin'])) {
 
 <div class="container mt-5">
     <h2>Dashboard Administration</h2>
+    
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link <?= $_GET['admin'] == 'user' ? 'active' : '' ?>" href="index.php?page=admin&admin=user" data-toggle="tab">Gestion des Utilisateurs</a>

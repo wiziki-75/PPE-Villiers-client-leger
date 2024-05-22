@@ -19,30 +19,27 @@ if (isset($_POST['event'])) {
 
 ?>
 
-<div class="container mt-5 mb-5"> <!-- Notez l'ajout de mb-5 ici pour l'espace en bas -->
+<div class="container mt-5 mb-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-    <h1>Ajouter un évènement</h1>
+      <h1>Ajouter un évènement</h1>
       <form method="POST">
-        <!-- Name field -->
+
         <div class="mb-3">
           <label for="nom" class="form-label">Nom</label>
           <input type="text" name="nom" class="form-control" id="nom" placeholder="Entrez le nom de l'événement" required>
         </div>
 
-        <!-- Description field -->
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
           <textarea class="form-control" name="description" id="description" rows="3" placeholder="Entrez une description" required></textarea>
         </div>
 
-        <!-- Date field -->
         <div class="mb-3">
           <label for="date" class="form-label">Date</label>
           <input type="datetime-local" name="date" class="form-control" id="date" required>
         </div>
 
-        <!-- Type dropdown -->
         <div class="mb-3">
           <label for="type" class="form-label">Type</label>
           <select class="form-select" name="type" id="type">
@@ -76,7 +73,6 @@ if (isset($_POST['event'])) {
           </select>
         </div>
 
-        <!-- Submit button -->
         <button type="submit" class="btn btn-primary" name="event">Soumettre</button>
       </form>
     </div>

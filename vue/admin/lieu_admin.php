@@ -19,7 +19,16 @@
         $lieux = $unControleur->selectAllLieu();
         foreach ($lieux as $lieu) {
         ?>
-            <tr>
+            <tr class="
+    <?php
+            if ($lieu['disponibilite'] === 'disponible') {
+                echo 'table-success';
+            } elseif ($lieu['disponibilite'] === 'indisponible') {
+                echo 'table-danger';
+            } else {
+                echo 'table-warning';
+            }
+    ?>">
                 <td>
                     <div class="dropdown-center">
                         <?php
@@ -32,7 +41,7 @@
                                 <li><a class="dropdown-item" href="index.php?page=lieuState&id=<?= $lieu['idLieu'] ?>&lieuState=1">Disponible</a></li>
                                 <li><a class="dropdown-item" href="index.php?page=lieuState&id=<?= $lieu['idLieu'] ?>&lieuState=2">Indisponible</a></li>
                                 <li><a class="dropdown-item" href="index.php?page=lieuModif&id=<?= $lieu['idLieu'] ?>">Modifier</a></li>
-                                <li><a class="dropdown-item" href="index.php?page=deleteLieu&id=<?= $lieu['idLieu'] ?>">Supprimer</a></li>
+                                <li><a class="link-danger dropdown-item" href="index.php?page=deleteLieu&id=<?= $lieu['idLieu'] ?>">Supprimer</a></li>
                             </ul>
                         <?php
                         }

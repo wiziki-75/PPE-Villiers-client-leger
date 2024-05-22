@@ -13,8 +13,27 @@
     </div>
 </div>
 
-<table class="table table-striped table-bordered" id="currentEvents">
+<?php
+function statusConvert($status)
+{
+    switch ($status) {
+        case 'confirmé':
+            return 'Confirmé';
+            break;
+        case 'annulé':
+            return 'Annulé';
+            break;
+        case 'en_attente':
+            return 'En attente';
+            break;
+        case 'complet':
+            return 'Complet';
+            break;
+    }
+}
+?>
 
+<table class="table table-striped table-bordered" id="currentEvents">
     <thead>
         <tr>
             <th></th>
@@ -32,7 +51,18 @@
         $presentEvents = $unControleur->selectAllEvenement('present');
         foreach ($presentEvents as $event) {
         ?>
-            <tr>
+            <tr class="
+            <?php
+            if ($event['statut'] === 'confirmé') {
+                echo 'table-success';
+            } elseif ($event['statut'] === 'annulé') {
+                echo 'table-danger';
+            } elseif ($event['statut'] === 'complet') {
+                echo 'table-primary';
+            } else {
+                echo 'table-warning';
+            }
+            ?>">
                 <td>
                     <div class="dropdown-center">
                         <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,14 +73,13 @@
                             <li><a class="dropdown-item" href="index.php?page=eventState&eventState=2&id=<?= $event['idEvenement'] ?>">En attente</a></li>
                             <li><a class="dropdown-item" href="index.php?page=eventState&eventState=3&id=<?= $event['idEvenement'] ?>">Annuler</a></li>
                             <li><a class="dropdown-item" href="index.php?page=eventModif&id=<?= $event['idEvenement'] ?>">Modifier</a></li>
-                            <li><a class="link-danger dropdown-item" href="index.php?page=deleteEvent&id=<?= $event['idEvenement'] ?>">Supprimer</a></li>
                         </ul>
                     </div>
                 </td>
                 <td><?= $event['nom'] ?></td>
                 <td><?= $event['date'] ?></td>
                 <td><?= $event['type'] ?></td>
-                <td><?= $event['statut'] ?></td>
+                <td><strong><?= statusConvert($event['statut']) ?></strong></td>
                 <td><?= $event['adresse_lieu'] ?></td>
                 <td><?= $event['user_courriel'] ?></td>
                 <td class="text-center h4"><?= $event['nombre_inscrits'] ?> / <?= $event['capacite'] ?></td>
@@ -65,8 +94,7 @@
 
     <thead>
         <tr>
-            <th></th>
-            <th>Nom2</th>
+            <th>Nom</th>
             <th>Date</th>
             <th>Type</th>
             <th>Status</th>
@@ -81,27 +109,13 @@
         foreach ($pastEvents as $event) {
         ?>
             <tr>
-                <td>
-                    <div class="dropdown-center">
-                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img class="dropdown-toggle" src="vue/images/bouton-modifier.png">
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="index.php?page=eventState&eventState=1&id=<?= $event['idEvenement'] ?>">Confirmé</a></li>
-                            <li><a class="dropdown-item" href="index.php?page=eventState&eventState=2&id=<?= $event['idEvenement'] ?>">En attente</a></li>
-                            <li><a class="dropdown-item" href="index.php?page=eventState&eventState=3&id=<?= $event['idEvenement'] ?>">Annuler</a></li>
-                            <li><a class="dropdown-item" href="index.php?page=eventModif&id=<?= $event['idEvenement'] ?>">Modifier</a></li>
-                            <li><a class="link-danger dropdown-item" href="index.php?page=deleteEvent&id=<?= $event['idEvenement'] ?>">Supprimer</a></li>
-                        </ul>
-                    </div>
-                </td>
                 <td><?= $event['nom'] ?></td>
                 <td><?= $event['date'] ?></td>
                 <td><?= $event['type'] ?></td>
                 <td><?= $event['statut'] ?></td>
                 <td><?= $event['adresse_lieu'] ?></td>
                 <td><?= $event['user_courriel'] ?></td>
-                <td class="text-center h4"><?= $event['nombre_inscrits'] ?> / <?= $event['capacite']?></td>
+                <td class="text-center h4"><?= $event['nombre_inscrits'] ?> / <?= $event['capacite'] ?></td>
             </tr>
         <?php
         }
@@ -110,17 +124,17 @@
 </table>
 
 <script>
-document.getElementById('eventSwitch').addEventListener('change', function() {
-    var checkBox = document.getElementById("eventSwitch");
-    var currentEventsTable = document.getElementById("currentEvents");
-    var pastEventsTable = document.getElementById("pastEvents");
+    document.getElementById('eventSwitch').addEventListener('change', function() {
+        var checkBox = document.getElementById("eventSwitch");
+        var currentEventsTable = document.getElementById("currentEvents");
+        var pastEventsTable = document.getElementById("pastEvents");
 
-    if (checkBox.checked) {
-        currentEventsTable.classList.add('d-none');
-        pastEventsTable.classList.remove('d-none');
-    } else {
-        currentEventsTable.classList.remove('d-none');
-        pastEventsTable.classList.add('d-none');
-    }
-});
+        if (checkBox.checked) {
+            currentEventsTable.classList.add('d-none');
+            pastEventsTable.classList.remove('d-none');
+        } else {
+            currentEventsTable.classList.remove('d-none');
+            pastEventsTable.classList.add('d-none');
+        }
+    });
 </script>

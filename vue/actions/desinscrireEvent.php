@@ -4,7 +4,8 @@ if(isset($_GET['id'])){
     if($deleteParticipation){
         header('Location: index.php?page=profile');
     } else {
-        echo "erreur";
+        echo $deleteParticipation;
+        echo "Erreur lors de la tentative de desinscription";
     }
 } else {
     header("Location: ../../index.php");
