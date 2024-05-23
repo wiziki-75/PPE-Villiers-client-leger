@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS gestionevenements;
+USE gestionevenements;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
@@ -310,7 +313,7 @@ DELIMITER $$
 CREATE TRIGGER `check_email` BEFORE INSERT ON `user` FOR EACH ROW BEGIN
     DECLARE email_count INT;
 
-    SELECT COUNT(*) INTO email_count FROM User WHERE courriel = NEW.courriel;
+    SELECT COUNT(*) INTO email_count FROM user WHERE courriel = NEW.courriel;
 
     IF email_count > 0 THEN
         SIGNAL SQLSTATE '45000'
@@ -322,7 +325,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `check_email_insert` BEFORE INSERT ON `user` FOR EACH ROW BEGIN
     DECLARE email_count INT;
-    SELECT COUNT(*) INTO email_count FROM User WHERE courriel = NEW.courriel;
+    SELECT COUNT(*) INTO email_count FROM user WHERE courriel = NEW.courriel;
     IF email_count > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Cet email est déjà utilisé';
@@ -333,7 +336,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `check_email_update` BEFORE UPDATE ON `user` FOR EACH ROW BEGIN
     DECLARE email_count INT;
-    SELECT COUNT(*) INTO email_count FROM User WHERE courriel = NEW.courriel AND idUtilisateur != NEW.idUtilisateur;
+    SELECT COUNT(*) INTO email_count FROM user WHERE courriel = NEW.courriel AND idUtilisateur != NEW.idUtilisateur;
     IF email_count > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Cet email est déjà utilisé';

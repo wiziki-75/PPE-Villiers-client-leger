@@ -4,8 +4,8 @@ class BDD {
 
     public function __construct(){
         $url = "mysql:host=localhost;dbname=gestionevenements";
-        $user = "root";
-        $mdp = "";
+        $user = "nathan";
+        $mdp = "nathan";
 
         try {
             // Instanciation de la classe PDO

@@ -43,7 +43,7 @@ class user extends BDD
     function insertUser($tab)
     {
         try {
-            $requete = $this->unPDO->prepare("INSERT INTO User (nom, prenom, courriel, motdepasse, role) VALUES (:nom, :prenom, :courriel, :motdepasse, :role)");
+            $requete = $this->unPDO->prepare("INSERT INTO user (nom, prenom, courriel, motdepasse, role) VALUES (:nom, :prenom, :courriel, :motdepasse, :role)");
             $nom = $tab['nom'];
             $prenom = $tab['prenom'];
             $courriel = $tab['courriel'];
@@ -129,7 +129,7 @@ class user extends BDD
     function deleteUser($id)
     {
         try {
-            $requete = $this->unPDO->prepare("DELETE FROM User WHERE idUtilisateur = :id");
+            $requete = $this->unPDO->prepare("DELETE FROM user WHERE idUtilisateur = :id");
             $requete->bindParam(':id', $id);
             $requete->execute();
             return true;
