@@ -146,10 +146,10 @@ class evenement extends BDD
     public function selectParticipation($id)
     {
         $requete = $this->unPDO->prepare(
-            "SELECT participation.*, Evenement.nom, Evenement.description, Evenement.date, Evenement.type, Evenement.statut, Evenement.organisateurId, Evenement.lieuId,
+            "SELECT participation.*, evenement.nom, evenement.description, evenement.date, evenement.type, evenement.statut, evenement.organisateurId, evenement.lieuId,
         lieu.adresse AS adresse_lieu
         FROM participation
-        JOIN Evenement ON participation.idEvenement = Evenement.idEvenement
+        JOIN evenement ON participation.idEvenement = evenement.idEvenement
         JOIN lieu ON evenement.lieuId = lieu.idLieu
         WHERE participation.idParticipant = :id;
         "
